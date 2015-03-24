@@ -7,12 +7,14 @@ import android.animation.TimeInterpolator;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 
@@ -22,19 +24,27 @@ import java.lang.ref.WeakReference;
  * Created by DK on 2015/3/19.
  */
 public class CircleAnimationUtil {
-    private static final int DURATION = 2000;
+    private static final int DEFAULT_DURATION = 1000;
+    private static final int DEFAULT_DURATION_DISAPPEAR = 200;
     private View mTarget;
     private View mDest;
+
     private int originX;
     private int originY;
     private int destX;
     private int destY;
-    private int mDuration = DURATION;
-    private WeakReference<Activity> mContextReference;
 
+    private int mCircleDuration = DEFAULT_DURATION;
+    private int mMoveDuration = DEFAULT_DURATION;
+    private int mDisappearDuration = DEFAULT_DURATION_DISAPPEAR;
+
+    private WeakReference<Activity> mContextReference;
+    private int mBorderWidth = 4;
+    private int mBorderColor = Color.BLACK;
     //    private CircleLayout mCircleLayout;
     private Bitmap mBitmap;
     private CircleImageView mImageView;
+    private Animator.AnimatorListener mAnimationListener;
 
     public CircleAnimationUtil() {
     }
@@ -66,6 +76,26 @@ public class CircleAnimationUtil {
         return this;
     }
 
+    public CircleAnimationUtil setBorderWidth(int width) {
+        mBorderWidth = width;
+        return this;
+    }
+
+    public CircleAnimationUtil setBorderColor(int color) {
+        mBorderColor = color;
+        return this;
+    }
+
+    public CircleAnimationUtil setCircleDuration(int duration) {
+        mCircleDuration = duration;
+        return this;
+    }
+
+    public CircleAnimationUtil setMoveDuration(int duration) {
+        mMoveDuration = duration;
+        return this;
+    }
+
     private boolean prepare() {
         if (mContextReference.get() != null) {
             ViewGroup decoreView = (ViewGroup) mContextReference.get().getWindow().getDecorView();
@@ -74,7 +104,8 @@ public class CircleAnimationUtil {
             if (mImageView == null)
                 mImageView = new CircleImageView(mContextReference.get());
             mImageView.setImageBitmap(mBitmap);
-
+            mImageView.setBorderWidth(mBorderWidth);
+            mImageView.setBorderColor(mBorderColor);
 
             int[] src = new int[2];
             mTarget.getLocationOnScreen(src);
@@ -95,50 +126,62 @@ public class CircleAnimationUtil {
     }
 
     private AnimatorSet getAvatarRevealAnimator() {
-        AnimatorSet animatorSet = new AnimatorSet();
         final int endRadius = Math.max(destX, destY) / 2;
-        int startRadius = Math.max(originX, originY);
+        final int startRadius = Math.max(originX, originY);
 
         Animator mRevealAnimator = ObjectAnimator.ofFloat(mImageView, "drawableRadius", startRadius, endRadius);
         mRevealAnimator.setInterpolator(new AccelerateInterpolator());
-        mRevealAnimator.addListener(new Animator.AnimatorListener() {
+
+//        float scaleFactor = Math.max(2f * destY / originY, 2f * destX / originX);
+        float scaleFactor = 0.5f;
+        Animator scaleAnimatorY = ObjectAnimator.ofFloat(mImageView, View.SCALE_Y, 1, 1, 1, 1, scaleFactor);
+        Animator scaleAnimatorX = ObjectAnimator.ofFloat(mImageView, View.SCALE_X, 1, 1, 1, 1, scaleFactor);
+
+        AnimatorSet animatorCircleSet = new AnimatorSet();
+        animatorCircleSet.setDuration(mCircleDuration);
+        animatorCircleSet.playTogether(scaleAnimatorX, scaleAnimatorY, mRevealAnimator);
+        animatorCircleSet.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-
+                if (mAnimationListener != null)
+                    mAnimationListener.onAnimationStart(animation);
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
-//                mTarget.setRevealClip(true, originX / 2, originY / 2, endRadius);
-//                try {
-//                    Method method = Class.forName("android.view.View").getDeclaredMethod("setRevealClip", boolean.class, float.class, float.class, float.class);
-//                    method.setAccessible(true);
-//                    method.invoke(mTarget, true, originX / 2, originY / 2, endRadius);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-
                 int[] src = new int[2];
                 int[] dest = new int[2];
                 mImageView.getLocationOnScreen(src);
                 mDest.getLocationOnScreen(dest);
 
-                Animator translatorX = ObjectAnimator.ofFloat(mImageView, View.X, 0, dest[0] - src[0] - 2 * endRadius);
+                float y = mImageView.getY();
+                float x = mImageView.getX();
+                Animator translatorX = ObjectAnimator.ofFloat(mImageView, View.X, x, x + dest[0] - src[0] - 0.25f * (startRadius / 2 - endRadius));
                 translatorX.setInterpolator(new TimeInterpolator() {
                     @Override
                     public float getInterpolation(float input) {
-                        return (float) (Math.sin((0.5f * input) * Math.PI));
+//                        return (float) (Math.sin((0.5f * input) * Math.PI));
+                        //-(1-x)^2+1
+                        return (float) (-Math.pow(input - 1, 2) + 1f);
                     }
                 });
-                float y = mImageView.getY();
-                Animator translatorY = ObjectAnimator.ofFloat(mImageView, View.Y, y, y / 2 + dest[1] - src[1]);
+                Animator translatorY = ObjectAnimator.ofFloat(mImageView, View.Y, y, y + dest[1] - src[1] - 0.25f * (startRadius / 2 - endRadius));
                 translatorY.setInterpolator(new LinearInterpolator());
 
-                AnimatorSet animatorSet = new AnimatorSet();
-                animatorSet.playTogether(translatorX, translatorY);
-                animatorSet.setDuration(mDuration);
-                animatorSet.playSequentially();
-                animatorSet.addListener(new Animator.AnimatorListener() {
+                AnimatorSet animatorMoveSet = new AnimatorSet();
+                animatorMoveSet.playTogether(translatorX, translatorY);
+                animatorMoveSet.setDuration(mMoveDuration);
+
+                AnimatorSet animatorDisappearSet = new AnimatorSet();
+                Animator disappearAnimatorY = ObjectAnimator.ofFloat(mImageView, View.SCALE_Y, 0.5f, 0);
+                Animator disappearAnimatorX = ObjectAnimator.ofFloat(mImageView, View.SCALE_X, 0.5f, 0);
+                animatorDisappearSet.setDuration(mDisappearDuration);
+                animatorDisappearSet.playTogether(disappearAnimatorX, disappearAnimatorY);
+
+
+                AnimatorSet total = new AnimatorSet();
+                total.playSequentially(animatorMoveSet, animatorDisappearSet);
+                total.addListener(new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
 
@@ -146,12 +189,9 @@ public class CircleAnimationUtil {
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        AnimatorSet animatorSet = new AnimatorSet();
-                        Animator scaleAnimatorY = ObjectAnimator.ofFloat(mImageView, View.SCALE_Y, 0.5f, 0);
-                        Animator scaleAnimatorX = ObjectAnimator.ofFloat(mImageView, View.SCALE_X, 0.5f, 0);
-                        animatorSet.setDuration(mDuration);
-                        animatorSet.playTogether(scaleAnimatorX, scaleAnimatorY);
-                        animatorSet.start();
+                        if (mAnimationListener != null)
+                            mAnimationListener.onAnimationEnd(animation);
+                        reset();
                     }
 
                     @Override
@@ -164,7 +204,7 @@ public class CircleAnimationUtil {
 
                     }
                 });
-                animatorSet.start();
+                total.start();
             }
 
             @Override
@@ -178,14 +218,7 @@ public class CircleAnimationUtil {
             }
         });
 
-//        float scaleFactor = Math.max(2f * destY / originY, 2f * destX / originX);
-        float scaleFactor = 0.5f;
-        Animator scaleAnimatorY = ObjectAnimator.ofFloat(mImageView, View.SCALE_Y, 1, 1, 1, 1, scaleFactor);
-        Animator scaleAnimatorX = ObjectAnimator.ofFloat(mImageView, View.SCALE_X, 1, 1, 1, 1, scaleFactor);
-        animatorSet.setDuration(500);
-        animatorSet.playTogether(scaleAnimatorX, scaleAnimatorY, mRevealAnimator);
-
-        return animatorSet;
+        return animatorCircleSet;
     }
 
     private Bitmap drawViewToBitmap(View view, int width, int height) {
@@ -206,5 +239,11 @@ public class CircleAnimationUtil {
         if (mImageView.getParent() != null)
             ((ViewGroup) mImageView.getParent()).removeView(mImageView);
         mImageView = null;
+        mTarget.setVisibility(View.VISIBLE);
+    }
+
+    public CircleAnimationUtil setAnimationListener(Animator.AnimatorListener listener) {
+        mAnimationListener = listener;
+        return this;
     }
 }

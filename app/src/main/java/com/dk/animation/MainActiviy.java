@@ -11,25 +11,31 @@ import com.dk.animation.circle.CircleAnimationUtil;
  */
 public class MainActiviy extends Activity {
     private View mTarget;
-    private View mFab;
+    private View mFab1;
+    private View mFab2;
+    private View mFab3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTarget = findViewById(R.id.target);
-        mFab = findViewById(R.id.fab);
-        mTarget.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CircleAnimationUtil util = new CircleAnimationUtil();
-                util.attachActivity(MainActiviy.this);
-                util.setOriginRect(mTarget.getWidth(), mTarget.getHeight());
-                util.setDestRect(mFab.getWidth(), mFab.getWidth());
-                util.setTargetView(mTarget);
-                util.setDestView(mFab);
-                util.startAnimation();
-            }
-        });
+        findViewById(R.id.fab1).setOnClickListener(mOnClickListener);
+        findViewById(R.id.fab2).setOnClickListener(mOnClickListener);
+        findViewById(R.id.fab3).setOnClickListener(mOnClickListener);
+
     }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            CircleAnimationUtil util = new CircleAnimationUtil();
+            util.attachActivity(MainActiviy.this);
+            util.setOriginRect(mTarget.getWidth(), mTarget.getHeight());
+            util.setDestRect(v.getWidth(), v.getWidth());
+            util.setTargetView(mTarget);
+            util.setDestView(v);
+            util.startAnimation();
+        }
+    };
 }
