@@ -241,7 +241,7 @@ public class CircleAnimationUtil {
         if (mImageView.getParent() != null)
             ((ViewGroup) mImageView.getParent()).removeView(mImageView);
         mImageView = null;
-        mTarget.setVisibility(View.VISIBLE);
+//        mTarget.setVisibility(View.VISIBLE);
     }
 
     public CircleAnimationUtil setAnimationListener(Animator.AnimatorListener listener) {
