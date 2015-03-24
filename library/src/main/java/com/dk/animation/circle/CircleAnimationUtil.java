@@ -120,7 +120,7 @@ public class CircleAnimationUtil {
     public void startAnimation() {
 
         if (prepare()) {
-            mTarget.setVisibility(View.INVISIBLE);
+//            mTarget.setVisibility(View.INVISIBLE);
             getAvatarRevealAnimator().start();
         }
     }
@@ -133,7 +133,7 @@ public class CircleAnimationUtil {
         mRevealAnimator.setInterpolator(new AccelerateInterpolator());
 
 //        float scaleFactor = Math.max(2f * destY / originY, 2f * destX / originX);
-        float scaleFactor = 0.5f;
+        final float scaleFactor = 0.5f;
         Animator scaleAnimatorY = ObjectAnimator.ofFloat(mImageView, View.SCALE_Y, 1, 1, 1, 1, scaleFactor);
         Animator scaleAnimatorX = ObjectAnimator.ofFloat(mImageView, View.SCALE_X, 1, 1, 1, 1, scaleFactor);
 
@@ -156,7 +156,7 @@ public class CircleAnimationUtil {
 
                 float y = mImageView.getY();
                 float x = mImageView.getX();
-                Animator translatorX = ObjectAnimator.ofFloat(mImageView, View.X, x, x + dest[0] - src[0] - 0.25f * (startRadius / 2 - endRadius));
+                Animator translatorX = ObjectAnimator.ofFloat(mImageView, View.X, x, x + dest[0] - (src[0] + (originX * scaleFactor - 2 * endRadius * scaleFactor) / 2) + (0.5f * destX - scaleFactor * endRadius));
                 translatorX.setInterpolator(new TimeInterpolator() {
                     @Override
                     public float getInterpolation(float input) {
@@ -165,7 +165,7 @@ public class CircleAnimationUtil {
                         return (float) (-Math.pow(input - 1, 2) + 1f);
                     }
                 });
-                Animator translatorY = ObjectAnimator.ofFloat(mImageView, View.Y, y, y + dest[1] - src[1] - 0.25f * (startRadius / 2 - endRadius));
+                Animator translatorY = ObjectAnimator.ofFloat(mImageView, View.Y, y, y + dest[1] - (src[1] + (originY * scaleFactor - 2 * endRadius * scaleFactor) / 2) + (0.5f * destY - scaleFactor * endRadius));
                 translatorY.setInterpolator(new LinearInterpolator());
 
                 AnimatorSet animatorMoveSet = new AnimatorSet();
