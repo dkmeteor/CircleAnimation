@@ -131,13 +131,13 @@ public class CircleAnimationUtil {
         final float endRadius = Math.max(destX, destY) / 2;
         final float startRadius = Math.max(originX, originY);
 
-        Animator mRevealAnimator = ObjectAnimator.ofFloat(mImageView, "drawableRadius", startRadius, endRadius);
+        Animator mRevealAnimator = ObjectAnimator.ofFloat(mImageView, "drawableRadius", startRadius, endRadius * 1.05f, endRadius * 0.9f, endRadius);
         mRevealAnimator.setInterpolator(new AccelerateInterpolator());
 
 //        float scaleFactor = Math.max(2f * destY / originY, 2f * destX / originX);
         final float scaleFactor = 0.5f;
-        Animator scaleAnimatorY = ObjectAnimator.ofFloat(mImageView, View.SCALE_Y, 1, 1, 1, 1, scaleFactor);
-        Animator scaleAnimatorX = ObjectAnimator.ofFloat(mImageView, View.SCALE_X, 1, 1, 1, 1, scaleFactor);
+        Animator scaleAnimatorY = ObjectAnimator.ofFloat(mImageView, View.SCALE_Y, 1, 1, scaleFactor, scaleFactor);
+        Animator scaleAnimatorX = ObjectAnimator.ofFloat(mImageView, View.SCALE_X, 1, 1, scaleFactor, scaleFactor);
 
         AnimatorSet animatorCircleSet = new AnimatorSet();
         animatorCircleSet.setDuration(mCircleDuration);
@@ -175,8 +175,8 @@ public class CircleAnimationUtil {
                 animatorMoveSet.setDuration(mMoveDuration);
 
                 AnimatorSet animatorDisappearSet = new AnimatorSet();
-                Animator disappearAnimatorY = ObjectAnimator.ofFloat(mImageView, View.SCALE_Y, 0.5f, 0);
-                Animator disappearAnimatorX = ObjectAnimator.ofFloat(mImageView, View.SCALE_X, 0.5f, 0);
+                Animator disappearAnimatorY = ObjectAnimator.ofFloat(mImageView, View.SCALE_Y, scaleFactor, 0);
+                Animator disappearAnimatorX = ObjectAnimator.ofFloat(mImageView, View.SCALE_X, scaleFactor, 0);
                 animatorDisappearSet.setDuration(mDisappearDuration);
                 animatorDisappearSet.playTogether(disappearAnimatorX, disappearAnimatorY);
 
