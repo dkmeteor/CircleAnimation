@@ -29,13 +29,7 @@ public class MainActiviy extends Activity {
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            CircleAnimationUtil util = new CircleAnimationUtil();
-            util.attachActivity(MainActiviy.this);
-            util.setOriginRect(mTarget.getWidth(), mTarget.getHeight());
-            util.setDestRect(v.getWidth(), v.getWidth());
-            util.setTargetView(mTarget);
-            util.setDestView(v);
-            util.startAnimation();
+            new CircleAnimationUtil().attachActivity(MainActiviy.this).setTargetView(mTarget).setDestView(v).startAnimation();
         }
     };
 }

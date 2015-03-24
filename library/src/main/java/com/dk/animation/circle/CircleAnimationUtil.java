@@ -29,10 +29,10 @@ public class CircleAnimationUtil {
     private View mTarget;
     private View mDest;
 
-    private int originX;
-    private int originY;
-    private int destX;
-    private int destY;
+    private float originX;
+    private float originY;
+    private float destX;
+    private float destY;
 
     private int mCircleDuration = DEFAULT_DURATION;
     private int mMoveDuration = DEFAULT_DURATION;
@@ -56,16 +56,17 @@ public class CircleAnimationUtil {
 
     public CircleAnimationUtil setTargetView(View view) {
         mTarget = view;
+        setOriginRect(mTarget.getWidth(), mTarget.getHeight());
         return this;
     }
 
-    public CircleAnimationUtil setOriginRect(int x, int y) {
+    private CircleAnimationUtil setOriginRect(float x, float y) {
         originX = x;
         originY = y;
         return this;
     }
 
-    public CircleAnimationUtil setDestRect(int x, int y) {
+    private CircleAnimationUtil setDestRect(float x, float y) {
         destX = x;
         destY = y;
         return this;
@@ -73,6 +74,7 @@ public class CircleAnimationUtil {
 
     public CircleAnimationUtil setDestView(View view) {
         mDest = view;
+        setDestRect(mDest.getWidth(), mDest.getWidth());
         return this;
     }
 
@@ -120,14 +122,14 @@ public class CircleAnimationUtil {
     public void startAnimation() {
 
         if (prepare()) {
-//            mTarget.setVisibility(View.INVISIBLE);
+            mTarget.setVisibility(View.INVISIBLE);
             getAvatarRevealAnimator().start();
         }
     }
 
     private AnimatorSet getAvatarRevealAnimator() {
-        final int endRadius = Math.max(destX, destY) / 2;
-        final int startRadius = Math.max(originX, originY);
+        final float endRadius = Math.max(destX, destY) / 2;
+        final float startRadius = Math.max(originX, originY);
 
         Animator mRevealAnimator = ObjectAnimator.ofFloat(mImageView, "drawableRadius", startRadius, endRadius);
         mRevealAnimator.setInterpolator(new AccelerateInterpolator());
