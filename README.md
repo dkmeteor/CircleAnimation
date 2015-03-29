@@ -22,16 +22,43 @@ Run  it in one line:
     new CircleAnimationUtil().attachActivity(MainActiviy.this).setTargetView(mTargetView).setDestView(mDestView).startAnimation();
 
 ---
+
+##Other Settings
+
+TODO desc
+
+--
 ##Note:
 
-Library does not use `android.animation.RevealAnimator` , so you can use it on Android 4.0.3+.
+- Support Android 4.0.3+.
 
-If you want it to run under 2.x version, just replace ObjectAnimator with `nineoldandroids`.
+- If you want to run it under 2.x versions, just replace ObjectAnimator with `nineoldandroids`.
+
+- For better performance, using it with `RecyclerView` may be a good idea.
 
 ---
 ##Thanks to
 
 [CircleImageView](https://github.com/hdodenhof/CircleImageView)
+
+---
+
+
+#License
+
+    Copyright 2015 Antonio Leiva
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
 
 ---
 Developed By
