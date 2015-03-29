@@ -14,6 +14,8 @@ Please waiting for loading the gif...
 ![](/gif/circle_animation.gif)
 
 
+![](/gif/circle_animation2.gif)
+
 ##How to use
 ---
 
@@ -35,6 +37,8 @@ TODO desc
 - If you want to run it under 2.x versions, just replace ObjectAnimator with `nineoldandroids`.
 
 - For better performance, using it with `RecyclerView` may be a good idea.
+
+- The build_for_jcenter_publish.gradle is for publishing library on Jcenter, do not run that.
 
 ---
 ##Thanks to
