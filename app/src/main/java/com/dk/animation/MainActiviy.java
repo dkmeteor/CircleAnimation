@@ -1,6 +1,7 @@
 package com.dk.animation;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -23,7 +24,12 @@ public class MainActiviy extends Activity {
         findViewById(R.id.fab1).setOnClickListener(mOnClickListener);
         findViewById(R.id.fab2).setOnClickListener(mOnClickListener);
         findViewById(R.id.fab3).setOnClickListener(mOnClickListener);
-
+        findViewById(R.id.next).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActiviy.this, GridSample.class));
+            }
+        });
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener() {

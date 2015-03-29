@@ -5,4 +5,15 @@
         <item name="colorPrimaryDark">@color/primary_pressed</item>
         <item name="colorAccent">@color/accent</item>
     </style>
+
+
+    <style name="TwoWayViewBase">
+        <item name="android:background">#999999</item>
+    </style>
+
+    <style name="TwoWayView" parent="TwoWayViewBase">
+        <item name="android:orientation">vertical</item>
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
 </resources>
