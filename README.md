@@ -23,6 +23,13 @@ Run  it in one line:
     
     new CircleAnimationUtil().attachActivity(MainActiviy.this).setTargetView(mTargetView).setDestView(mDestView).startAnimation();
 
+	
+Gradle
+
+	dependencies {
+		compile( 'com.dk.animation.circle:library:0.1.0@aar')
+	}
+	
 ---
 
 ##Other Settings
