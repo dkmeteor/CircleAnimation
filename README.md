@@ -20,16 +20,16 @@ Please waiting for loading the gif...
 ---
 
 Run  it in one line:
-    
-    new CircleAnimationUtil().attachActivity(MainActiviy.this).setTargetView(mTargetView).setDestView(mDestView).startAnimation();
-
+```java
+new CircleAnimationUtil().attachActivity(MainActiviy.this).setTargetView(mTargetView).setDestView(mDestView).startAnimation();
+```
 	
 Gradle
-
-	dependencies {
-		compile( 'com.dk.animation.circle:library:0.1.0@aar')
-	}
-	
+```groovy
+dependencies {
+	compile( 'com.dk.animation.circle:library:0.1.0@aar')
+}
+```	
 ---
 
 ##Other Settings
@@ -57,7 +57,7 @@ TODO desc
 
 #License
 
-    Copyright 2015 Dean Ding
+    Copyright 2016 Dean Ding
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
