@@ -1,4 +1,4 @@
-#CircleAnimation
+# CircleAnimation
 ===========
 
 Animation for `Circular disappearance`?
@@ -16,7 +16,7 @@ Please waiting for loading the gif...
 
 ![](/gif/circle_animation2.gif)
 
-##How to use
+## How to use
 ---
 
 Run  it in one line:
@@ -32,12 +32,12 @@ dependencies {
 ```	
 ---
 
-##Other Settings
+## Other Settings
 
 TODO desc
 
 --
-##Note:
+## Note:
 
 - Support Android 4.0.3+.
 
@@ -48,14 +48,14 @@ TODO desc
 - The build_for_jcenter_publish.gradle is for publishing library on Jcenter, do not run that.
 
 ---
-##Thanks to
+## Thanks to
 
 [CircleImageView](https://github.com/hdodenhof/CircleImageView)
 
 ---
 
 
-#License
+# License
 
     Copyright 2016 Dean Ding
 
